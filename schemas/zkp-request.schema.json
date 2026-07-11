@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.memact.org/schemas/zkp-request.schema.json",
+  "title": "ZKPAuthorizationRequest",
+  "description": "Schema for the custom zkp_request parameter in CAP authorization requests",
+  "type": "object",
+  "required": [
+    "circuit_id",
+    "assertion",
+    "nonce"
+  ],
+  "properties": {
+    "circuit_id": {
+      "type": "string",
+      "description": "Identifier of the target ZK circuit to use for proving (e.g. range_proof_date)"
+    },
+    "assertion": {
+      "type": "object",
+      "description": "The logic statement or constraint to prove about the user attribute",
+      "required": [
+        "claim",
+        "operator",
+        "value"
+      ],
+      "properties": {
+        "claim": {
+          "type": "string",
+          "description": "The target user context claim (e.g. date_of_birth, country, email_domain)"
+        },
+        "operator": {
+          "type": "string",
+          "enum": [
+            "EQ",
+            "NEQ",
+            "GT",
+            "GTE",
+            "LT",
+            "LTE",
+            "IN",
+            "NOT_IN"
+          ],
+          "description": "Relational operator for assertion logic"
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "array"
+          ],
+          "description": "The public value or values to compare the user attribute against"
+        }
+      },
+      "additionalProperties": false
+    },
+    "nonce": {
+      "type": "string",
+      "minLength": 8,
+      "description": "A random client-side nonce to protect against proof replay attacks"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.memact.org/schemas/zkp-response.schema.json",
+  "title": "ZKPResponseAssertion",
+  "description": "Schema for the cap_zkp_assertion claim returned in the OAuth token payload",
+  "type": "object",
+  "required": [
+    "circuit_id",
+    "verification_key_uri",
+    "public_inputs",
+    "proof"
+  ],
+  "properties": {
+    "circuit_id": {
+      "type": "string",
+      "description": "Identifier of the ZK circuit verifying this proof"
+    },
+    "verification_key_uri": {
+      "type": "string",
+      "format": "uri",
+      "description": "URI to retrieve the public verification key (vkey.json) for this proof circuit"
+    },
+    "public_inputs": {
+      "type": "object",
+      "description": "The public parameters that were input into the circuit",
+      "required": [
+        "attribute_hash",
+        "operator",
+        "value",
+        "nonce"
+      ],
+      "properties": {
+        "attribute_hash": {
+          "type": "string",
+          "pattern": "^0x[a-fA-F0-9]+$",
+          "description": "Hex encoded salt-hashed attribute identifier, e.g., Keccak256 or SHA256"
+        },
+        "operator": {
+          "type": "string",
+          "enum": [
+            "EQ",
+            "NEQ",
+            "GT",
+            "GTE",
+            "LT",
+            "LTE",
+            "IN",
+            "NOT_IN"
+          ]
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "array"
+          ],
+          "description": "The public condition target value verified by the circuit"
+        },
+        "nonce": {
+          "type": "string",
+          "description": "The original random nonce provided by the client"
+        }
+      },
+      "additionalProperties": false
+    },
+    "proof": {
+      "type": "object",
+      "description": "The serialized groth16 ZK proof elements representing G1 and G2 curve elements",
+      "required": [
+        "pi_a",
+        "pi_b",
+        "pi_c"
+      ],
+      "properties": {
+        "pi_a": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "string",
+            "pattern": "^0x[a-fA-F0-9]+$"
+          },
+          "description": "A-parameter elements (G1) in proof"
+        },
+        "pi_b": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "string",
+              "pattern": "^0x[a-fA-F0-9]+$"
+            }
+          },
+          "description": "B-parameter elements (G2) in proof"
+        },
+        "pi_c": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "string",
+            "pattern": "^0x[a-fA-F0-9]+$"
+          },
+          "description": "C-parameter elements (G1) in proof"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
