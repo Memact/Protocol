@@ -1,0 +1,111 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.memact.org/schemas/zk-context-transition.schema.json",
+  "title": "ZKContextTransitionTransaction",
+  "description": "Schema for a single Zero Knowledge context state update transition transaction (CTT)",
+  "type": "object",
+  "required": [
+    "sender_identity",
+    "old_state_root",
+    "new_state_root",
+    "claim_key",
+    "proof",
+    "public_inputs"
+  ],
+  "properties": {
+    "sender_identity": {
+      "type": "string",
+      "description": "Identifier of the client application making the contribution"
+    },
+    "old_state_root": {
+      "type": "string",
+      "pattern": "^0x[a-fA-F0-9]{64}$",
+      "description": "Hex encoded 32-byte hash of the previous Context State Root (CSR)"
+    },
+    "new_state_root": {
+      "type": "string",
+      "pattern": "^0x[a-fA-F0-9]{64}$",
+      "description": "Hex encoded 32-byte hash of the proposed Context State Root (CSR)"
+    },
+    "claim_key": {
+      "type": "string",
+      "pattern": "^0x[a-fA-F0-9]{64}$",
+      "description": "The Poseidon hash representing the claim path index inside the Sparse Merkle Tree"
+    },
+    "proof": {
+      "type": "object",
+      "description": "The serialized groth16 ZK proof elements validating this transaction transition",
+      "required": [
+        "pi_a",
+        "pi_b",
+        "pi_c"
+      ],
+      "properties": {
+        "pi_a": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "string",
+            "pattern": "^0x[a-fA-F0-9]+$"
+          }
+        },
+        "pi_b": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "string",
+              "pattern": "^0x[a-fA-F0-9]+$"
+            }
+          }
+        },
+        "pi_c": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "string",
+            "pattern": "^0x[a-fA-F0-9]+$"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "public_inputs": {
+      "type": "object",
+      "description": "Public variables that are input directly to the state transition circuit validator",
+      "required": [
+        "old_state_root",
+        "new_state_root",
+        "claim_key_hash",
+        "contributor_authority_hash"
+      ],
+      "properties": {
+        "old_state_root": {
+          "type": "string",
+          "pattern": "^0x[a-fA-F0-9]{64}$"
+        },
+        "new_state_root": {
+          "type": "string",
+          "pattern": "^0x[a-fA-F0-9]{64}$"
+        },
+        "claim_key_hash": {
+          "type": "string",
+          "pattern": "^0x[a-fA-F0-9]{64}$"
+        },
+        "contributor_authority_hash": {
+          "type": "string",
+          "pattern": "^0x[a-fA-F0-9]{64}$",
+          "description": "Hash linking the client identity with the authorized public key stored in the SMT"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

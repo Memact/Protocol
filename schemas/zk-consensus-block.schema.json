@@ -1,0 +1,111 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.memact.org/schemas/zk-consensus-block.schema.json",
+  "title": "ZKConsensusBlock",
+  "description": "Schema for a consolidated batch block output by the ZK consensus engine containing multi-transaction rollup proofs",
+  "type": "object",
+  "required": [
+    "block_number",
+    "timestamp",
+    "old_state_root",
+    "new_state_root",
+    "batch_proof",
+    "transactions_count",
+    "validator_signatures"
+  ],
+  "properties": {
+    "block_number": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Sequential block number representing height of the context state ledger"
+    },
+    "timestamp": {
+      "type": "integer",
+      "description": "Epoch timestamp when consensus was reached and batch proof was finalized"
+    },
+    "old_state_root": {
+      "type": "string",
+      "pattern": "^0x[a-fA-F0-9]{64}$",
+      "description": "Hex encoded 32-byte root hash of the SMT before state batch updates"
+    },
+    "new_state_root": {
+      "type": "string",
+      "pattern": "^0x[a-fA-F0-9]{64}$",
+      "description": "Hex encoded 32-byte root hash of the SMT after applying state batch updates"
+    },
+    "batch_proof": {
+      "type": "object",
+      "description": "Serialized Groth16 ZK rollup proof demonstrating correct multi-state transition batch logic",
+      "required": [
+        "pi_a",
+        "pi_b",
+        "pi_c"
+      ],
+      "properties": {
+        "pi_a": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "string",
+            "pattern": "^0x[a-fA-F0-9]+$"
+          }
+        },
+        "pi_b": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "string",
+              "pattern": "^0x[a-fA-F0-9]+$"
+            }
+          }
+        },
+        "pi_c": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "string",
+            "pattern": "^0x[a-fA-F0-9]+$"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "transactions_count": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Number of state transitions reconciled and packed into this batch"
+    },
+    "validator_signatures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "validator_identity",
+          "signature"
+        ],
+        "properties": {
+          "validator_identity": {
+            "type": "string",
+            "description": "Public identifier/address of the signing validator node"
+          },
+          "signature": {
+            "type": "string",
+            "pattern": "^0x[a-fA-F0-9]+$",
+            "description": "ECDSA or EdDSA cryptographic signature over the state roots transition"
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "Signatures collected from validators confirming verification of the batch proof"
+    }
+  },
+  "additionalProperties": false
+}
