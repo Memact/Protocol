@@ -85,6 +85,13 @@ Used when a provider needs to verify a single claim value on-demand without perf
    * Raw `claim_value` and `salt` (if authorized by the UCT).
 3. **Verification**: Provider A validates the membership proof against its verified local copies of Provider B's state root.
 
+### 3.4. Cryptographic Proof Architecture & Scalable Verification
+To maintain scalability across heterogeneous federation nodes, the sync protocol decouples verification logic from specific zero-knowledge proving backends:
+
+* **Scheme Agnosticism**: All block `batch_proof` structures contain a generalized `proving_scheme` field (e.g., `groth16`, `plonk`, `halo2`) paired with a serialized `proof_data` payload.
+* **Batch Verification**: Syncing nodes can verify state transition proofs across multiple blocks in a single batch pass, reducing CPU overhead during catch-up operations.
+* **Recursive & Dispersed Verification**: Federated providers can utilize recursive proof aggregation to collapse $N$ sequential block transitions into a single unified verification token, scaling cross-provider catch-ups efficiently.
+
 ---
 
 ## 4. Conflict Resolution Policy (CRP)

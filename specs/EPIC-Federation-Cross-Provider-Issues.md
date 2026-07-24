@@ -29,15 +29,14 @@ This document outlines the detailed issues to be created in the issue trackers o
   * JSON schema files created in `schemas/`.
   * Validate that handshake, delta sync requests/responses, and claim verification proof structures conform to schemas.
 
-### Issue PROTOCOL-303: Conformance Test Suite for Federated Syncing Protocols
-* **Type**: Feature / Test Suite
-* **Priority**: Medium
-* **Status**: Draft
+### Issue PROTOCOL-303: Abstract Cryptographic Verification for Federation Sync (Issue #32)
+* **Type**: Feature / Refactor
+* **Priority**: High
 * **Description**:
-  Create an automated conformance test checklist and validation suite for providers implementing the federated synchronization protocol.
+  Abstract cryptographic proof verification models across the Federation & Cross-Provider Synchronization protocol to be proving-system agnostic, replacing hardcoded Groth16 (`pi_a`, `pi_b`, `pi_c`) structures with generalized `proving_scheme` and `proof_data` fields.
 * **Acceptance Criteria**:
-  * Add conformance checklist document in `conformance/` for federated state sync.
-  * Define test vectors for mutual authentication, User Consent Token (UCT) validation, and delta sync payload compliance.
+  * [RFC-006](RFC-006-Federated-State-Sync.md) details scheme-agnostic batch proof verification (Groth16, PLONK, Halo2).
+  * [`zk-sync-request.schema.json`](../schemas/zk-sync-request.schema.json) and [`zk-sync-response.schema.json`](../schemas/zk-sync-response.schema.json) schemas use generalized proof payloads (`proving_scheme`, `proof_data`).
 
 ---
 
